@@ -7,16 +7,13 @@ const auth      = require('./routes/auth');
 
 const app = express();
 
-const corsOptions = {
-  origin: 'https://interview-frontend-wine.vercel.app',
+connectDB();
+
+app.use(cors({
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+}));
 
 app.use(express.json());
 
