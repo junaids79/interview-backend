@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const express   = require('express');
 const cors      = require('cors');
@@ -10,7 +9,10 @@ const app = express();
 
 connectDB();
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://interview-frontend-wine.vercel.app',
+  credentials: true
+}));
 app.use(express.json());
 
 app.use((req, res, next) => {
