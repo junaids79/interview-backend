@@ -1,23 +1,29 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const connectDB = require('./db');
+const mongoose = require('mongoose');
 
 const app = express();
 
-connectDB();
+// CORS manually — most reliable way
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
 
-app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('AI Interview Pro backend running'));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB error:', err.message));
 
+app.get('/', (req, res) => res.send('AI Interview Pro backend running'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/reports', require('./routes/reports'));
-
-app.use((req, res) => {
-  res.status(404).json({ message: `Route ${req.method} ${req.path} not found` });
-});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
